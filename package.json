@@ -2,6 +2,9 @@
     "workspaces": ["./*"],
     "scripts": {
         "dev-frontend": "npm run dev --workspace frontend",
-        "dev-backend": "npm run dev --workspace backend"
+        "dev-backend": "npm run dev --workspace backend",
+        "build-frontend": "npm run build --workspace frontend",
+        "replace-build": "rm -rf backend/public && mv frontend/build backend/public",
+        "build": "npm run build --workspace frontend && npm run replace-build"
     }
 }
