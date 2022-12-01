@@ -53,6 +53,6 @@
 
 <style>
 	:global(.bx--modal-content) {
-		overflow: hidden;
+		overflow: hidden !important;
 	}
 </style>
