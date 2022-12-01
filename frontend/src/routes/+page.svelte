@@ -1,6 +1,12 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script lang="ts">
+	import { Button, Column, Grid, Row } from 'carbon-components-svelte';
+</script>
 
-<a href="/login">Login page</a>
-<br>
-<a href="/register">Register page</a>
+<Grid>
+	<Row>
+		<Column>
+			<h1>Main page</h1>
+			<Button href="/login">Go to login</Button>
+		</Column>
+	</Row>
+</Grid>

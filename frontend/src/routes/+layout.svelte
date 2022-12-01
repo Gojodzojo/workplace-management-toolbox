@@ -1,9 +1,11 @@
-<script lang="ts">
-	
+<script>
+	import Header from '$lib/Header/Header.svelte';
+	import { Content } from 'carbon-components-svelte';
+	import 'carbon-components-svelte/css/g100.css';
 </script>
 
-<header>
-	<a href="/">Go to main page</a>
-</header>
+<Header />
 
-<slot />
+<Content>
+	<slot />
+</Content>
