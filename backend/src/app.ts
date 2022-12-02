@@ -3,10 +3,10 @@ import cors from 'cors';
 import { resolve as resolvePath } from 'path';
 import { compare, hash } from 'bcrypt';
 import { config as loadEnv } from 'dotenv';
-import { sign } from 'jsonwebtoken';
+import { JwtPayload, sign, verify } from 'jsonwebtoken';
 import type { TypedRequest, TypedResponse, UserDbEntry } from './usefullTypes';
-import type { AuthData } from '$common/RequestTypes';
-import type { TokensResponse } from '$common/ResponseTypes';
+import type { AccessTokenRquest, AuthData } from '$common/RequestTypes';
+import type { AccessTokenResponse, TokensResponse } from '$common/ResponseTypes';
 
 const SALT_ROUNDS = 10;
 const port = 3001;
@@ -41,11 +41,11 @@ app.post('/login', async (req: TypedRequest<AuthData>, res: TypedResponse<Tokens
 		return;
 	}
 
-	const accessToken = sign({ username }, ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
-	const refreshToken = sign({ username }, REFRESH_TOKEN_SECRET, { expiresIn: '1 year' });
+	const accessToken = sign(username, ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+	const refreshToken = sign(username, REFRESH_TOKEN_SECRET, { expiresIn: '1 year' });
 
 	console.log(`Logged in. Username: ${username}, password: ${password}`);
-	res.status(200).json({ accessToken, refreshToken });
+	res.json({ accessToken, refreshToken });
 });
 
 app.put('/register', async (req: TypedRequest<AuthData>, res: TypedResponse<TokensResponse>) => {
@@ -60,12 +60,30 @@ app.put('/register', async (req: TypedRequest<AuthData>, res: TypedResponse<Toke
 	const hashedPassword = await hash(password, SALT_ROUNDS);
 	fakeUserDB.push({ username, hashedPassword });
 
-	const accessToken = sign({ username }, ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
-	const refreshToken = sign({ username }, REFRESH_TOKEN_SECRET, { expiresIn: '1y' });
+	const accessToken = sign(username, ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+	const refreshToken = sign(username, REFRESH_TOKEN_SECRET, { expiresIn: '1y' });
 
 	console.log(`Registered. Username: ${username}, password: ${password}`);
-	res.status(200).json({ accessToken, refreshToken });
+	res.json({ accessToken, refreshToken });
 });
+
+app.post(
+	'/token',
+	(req: TypedRequest<AccessTokenRquest>, res: TypedResponse<AccessTokenResponse>) => {
+		const { refreshToken } = req.body;
+
+		verify(refreshToken, REFRESH_TOKEN_SECRET, async (err, username) => {
+			if (err) {
+				res.status(401).json({ status: 'Bad refresh token' });
+				return;
+			}
+
+			console.log(username);
+			const accessToken = sign(username as string, ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+			res.json({ accessToken });
+		});
+	}
+);
 
 app.get('*', (_, res) => {
 	res.sendFile(resolvePath(__dirname + '/../public/index.html'));
