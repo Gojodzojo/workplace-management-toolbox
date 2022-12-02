@@ -6,3 +6,9 @@ export type AuthData = {
 export type AccessTokenRquest = {
   refreshToken: string;
 };
+
+export type AddReservationRequest = {
+  date: number;
+  workplaceNumber: number;
+  accessToken: string;
+};

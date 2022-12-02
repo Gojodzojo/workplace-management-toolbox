@@ -17,5 +17,6 @@ export interface TypedResponse<ResBody = never> extends Response {
 
 export interface UserDbEntry {
 	username: string;
+	id: number;
 	hashedPassword: string;
 }
