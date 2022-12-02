@@ -1,25 +1,56 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import type { AuthData } from '$common/RequestTypes';
-	import type { StatusResponse } from '$common/ResponseTypes';
+	import type { TokensResponse } from '$common/ResponseTypes';
 	import { apiFetch } from '$lib/scripts';
+	import { authStore } from '$lib/stores';
 	import { Modal, PasswordInput, TextInput } from 'carbon-components-svelte';
 
 	export let open = false;
 	let username = '';
 	let password = '';
+	let errorBoxContent = '';
 
 	async function login() {
-		const body: AuthData = { username, password };
-		const response = await apiFetch('/login', 'POST', body);
-		const json: StatusResponse = await response.json();
-		console.log(json.status);
+		try {
+			const body: AuthData = { username, password };
+			const response = await apiFetch('/login', 'POST', body);
+			const tokensOrStatus: TokensResponse = await response.json();
+
+			if ('status' in tokensOrStatus) {
+				errorBoxContent = tokensOrStatus.status;
+			} else {
+				$authStore = tokensOrStatus;
+				open = false;
+				username = '';
+				password = '';
+				goto('/user');
+			}
+		} catch (error) {
+			console.error(error);
+			errorBoxContent = 'Could not connect to server';
+		}
 	}
 
 	async function register() {
-		const body: AuthData = { username, password };
-		const response = await apiFetch('/register', 'PUT', body);
-		const json: StatusResponse = await response.json();
-		console.log(json.status);
+		try {
+			const body: AuthData = { username, password };
+			const response = await apiFetch('/register', 'PUT', body);
+			const tokensOrStatus: TokensResponse = await response.json();
+
+			if ('status' in tokensOrStatus) {
+				errorBoxContent = tokensOrStatus.status;
+			} else {
+				$authStore = tokensOrStatus;
+				open = false;
+				username = '';
+				password = '';
+				goto('/user');
+			}
+		} catch (error) {
+			console.error(error);
+			errorBoxContent = 'Could not connect to server';
+		}
 	}
 </script>
 
@@ -49,6 +80,7 @@
 		labelText="Password"
 		placeholder="Enter password..."
 	/>
+	<p>{errorBoxContent}</p>
 </Modal>
 
 <style>

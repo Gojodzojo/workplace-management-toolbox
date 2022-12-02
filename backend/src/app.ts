@@ -3,7 +3,7 @@ import cors from 'cors';
 import { resolve as resolvePath } from 'path';
 import { compare, hash } from 'bcrypt';
 import { config as loadEnv } from 'dotenv';
-import { JwtPayload, sign, verify } from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken';
 import type { TypedRequest, TypedResponse, UserDbEntry } from './usefullTypes';
 import type { AccessTokenRquest, AuthData } from '$common/RequestTypes';
 import type { AccessTokenResponse, TokensResponse } from '$common/ResponseTypes';
@@ -41,8 +41,8 @@ app.post('/login', async (req: TypedRequest<AuthData>, res: TypedResponse<Tokens
 		return;
 	}
 
-	const accessToken = sign(username, ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
-	const refreshToken = sign(username, REFRESH_TOKEN_SECRET, { expiresIn: '1 year' });
+	const accessToken = sign({ username }, ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+	const refreshToken = sign({ username }, REFRESH_TOKEN_SECRET, { expiresIn: '1y' });
 
 	console.log(`Logged in. Username: ${username}, password: ${password}`);
 	res.json({ accessToken, refreshToken });
@@ -58,10 +58,11 @@ app.put('/register', async (req: TypedRequest<AuthData>, res: TypedResponse<Toke
 	}
 
 	const hashedPassword = await hash(password, SALT_ROUNDS);
+	console.log(hashedPassword);
 	fakeUserDB.push({ username, hashedPassword });
 
-	const accessToken = sign(username, ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
-	const refreshToken = sign(username, REFRESH_TOKEN_SECRET, { expiresIn: '1y' });
+	const accessToken = sign({ username }, ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+	const refreshToken = sign({ username }, REFRESH_TOKEN_SECRET, { expiresIn: '1y' });
 
 	console.log(`Registered. Username: ${username}, password: ${password}`);
 	res.json({ accessToken, refreshToken });
@@ -72,14 +73,14 @@ app.post(
 	(req: TypedRequest<AccessTokenRquest>, res: TypedResponse<AccessTokenResponse>) => {
 		const { refreshToken } = req.body;
 
-		verify(refreshToken, REFRESH_TOKEN_SECRET, async (err, username) => {
-			if (err) {
+		verify(refreshToken, REFRESH_TOKEN_SECRET, async (err, payload) => {
+			if (err || !payload || typeof payload === 'string') {
 				res.status(401).json({ status: 'Bad refresh token' });
 				return;
 			}
 
-			console.log(username);
-			const accessToken = sign(username as string, ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+			const { username } = payload;
+			const accessToken = sign({ username }, ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
 			res.json({ accessToken });
 		});
 	}

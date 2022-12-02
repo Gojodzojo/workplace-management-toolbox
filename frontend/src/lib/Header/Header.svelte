@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import { authStore } from '$lib/stores';
 	import {
 		Header,
 		HeaderAction,
@@ -20,6 +22,14 @@
 	let isSideNavOpen = false;
 	let isMenuOpen = false;
 	let isAuthModalOpen = false;
+
+	function handleProfileClick() {
+		if ($authStore) {
+			goto('/user');
+		} else {
+			isAuthModalOpen = true;
+		}
+	}
 </script>
 
 <Header
@@ -36,7 +46,7 @@
 		<HeaderGlobalAction
 			aria-label="Settings"
 			icon={UserAvatarFilledAlt}
-			on:click={() => (isAuthModalOpen = true)}
+			on:click={handleProfileClick}
 		/>
 
 		<HeaderAction bind:isOpen={isMenuOpen}>
