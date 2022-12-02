@@ -6,7 +6,7 @@ import { config as loadEnv } from 'dotenv';
 import { sign, verify } from 'jsonwebtoken';
 import type { TypedRequest, TypedResponse, UserDbEntry } from './usefullTypes';
 import type {
-	AccessTokenRquest,
+	AccessTokenRequest,
 	AddReservationRequest,
 	AuthData,
 	GetUserReservationsRequest
@@ -94,7 +94,7 @@ app.put('/register', async (req: TypedRequest<AuthData>, res: TypedResponse<Toke
 
 app.post(
 	'/token',
-	(req: TypedRequest<AccessTokenRquest>, res: TypedResponse<AccessTokenResponse>) => {
+	(req: TypedRequest<AccessTokenRequest>, res: TypedResponse<AccessTokenResponse>) => {
 		const { refreshToken } = req.body;
 
 		verify(refreshToken, REFRESH_TOKEN_SECRET, async (err, payload) => {

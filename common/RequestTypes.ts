@@ -3,7 +3,7 @@ export type AuthData = {
   password: string;
 };
 
-export type AccessTokenRquest = {
+export type AccessTokenRequest = {
   refreshToken: string;
 };
 
