@@ -1,9 +1,14 @@
 export type Day = {
-  day: number;
+  date: Date;
   isFull: boolean;
-}
+};
 
 export type Workplace = {
   number: number;
   description: string;
-}
+};
+
+export type Reservation = {
+  date: string;
+  workplaceNumber: number;
+};
