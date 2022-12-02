@@ -5,8 +5,18 @@ import { compare, hash } from 'bcrypt';
 import { config as loadEnv } from 'dotenv';
 import { sign, verify } from 'jsonwebtoken';
 import type { TypedRequest, TypedResponse, UserDbEntry } from './usefullTypes';
-import type { AccessTokenRquest, AddReservationRequest, AuthData } from '$common/RequestTypes';
-import type { AccessTokenResponse, StatusResponse, TokensResponse } from '$common/ResponseTypes';
+import type {
+	AccessTokenRquest,
+	AddReservationRequest,
+	AuthData,
+	GetUserReservationsRequest
+} from '$common/RequestTypes';
+import type {
+	AccessTokenResponse,
+	GetUserReservationsResponse,
+	StatusResponse,
+	TokensResponse
+} from '$common/ResponseTypes';
 import type { Reservation, Workplace } from '$common/types';
 
 const SALT_ROUNDS = 10;
@@ -124,6 +134,37 @@ app.put(
 			fakeReservationDb.push({ date, userId, workplaceNumber });
 
 			res.json({ status: 'Success' });
+		});
+	}
+);
+
+app.post(
+	'/get-user-reservations',
+	(
+		req: TypedRequest<GetUserReservationsRequest>,
+		res: TypedResponse<GetUserReservationsResponse>
+	) => {
+		const { accessToken } = req.body;
+
+		verify(accessToken, ACCESS_TOKEN_SECRET, async (err, payload) => {
+			if (err || !payload || typeof payload === 'string') {
+				res.status(401).json({ status: 'Bad access token' });
+				return;
+			}
+
+			const { id: userId } = payload;
+			const response: GetUserReservationsResponse = {
+				reservations: []
+			};
+
+			fakeReservationDb.forEach(({ userId: uid, date, workplaceNumber }) => {
+				if (uid !== userId) return;
+				const { description } = fakeWorkplaceDb.find((w) => w.number === workplaceNumber)!;
+
+				response.reservations.push({ date, description, workplaceNumber });
+			});
+
+			res.json(response);
 		});
 	}
 );

@@ -15,3 +15,13 @@ export type AccessTokenResponse =
       accessToken: string;
     }
   | StatusResponse;
+
+export type GetUserReservationsResponse =
+  | {
+      reservations: {
+        date: number;
+        workplaceNumber: number;
+        description: string;
+      }[];
+    }
+  | StatusResponse;

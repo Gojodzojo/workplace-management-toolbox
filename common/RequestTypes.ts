@@ -12,3 +12,7 @@ export type AddReservationRequest = {
   workplaceNumber: number;
   accessToken: string;
 };
+
+export type GetUserReservationsRequest = {
+  accessToken: string;
+};
