@@ -43,11 +43,9 @@ let fakeUserDB: UserDbEntry[] = [];
 let fakeReservationDb: Reservation[] = [];
 const fakeWorkplaceDb: Workplace[] = [
 	{ number: 1, description: 'this is description for workplace 1', url: 'http://192.168.5.52' },
-	{ number: 2, description: 'this is description for workplace 2', url: 'http://192.168.5.227' },
+	{ number: 2, description: 'this is description for workplace 2', url: '' },
 	{ number: 3, description: 'this is description for workplace 3', url: '' }
 ];
-
-espFetch('?data=1111', 'GET');
 
 app.post('/login', async (req: TypedRequest<AuthData>, res: TypedResponse<TokensResponse>) => {
 	const { username, password } = req.body;
@@ -138,7 +136,7 @@ app.put(
 
 			const { id: userId } = payload;
 			fakeReservationDb.push({ date, userId, workplaceNumber });
-			// fakeReservationDb.sort((a, b) => a.date - b.date)
+			updateWorkplaces();
 
 			res.json({ status: 'Success' });
 		});
@@ -212,6 +210,7 @@ app.get('/button', async (req: TypedRequest<{}, { wp: string }, {}>, res: TypedR
 });
 
 app.get('/startup', (req: TypedRequest, res: TypedResponse) => {
+	updateWorkplaces();
 	res.send('Success');
 });
 
@@ -222,3 +221,32 @@ app.get('*', (_, res) => {
 app.listen(port, function () {
 	console.log(`App is listening on port ${port}!`);
 });
+
+const msPerDay = 1000 * 60 * 60 * 24;
+
+function updateWorkplaces() {
+	// fakeReservationDb = fakeReservationDb.filter(
+	// 	(reservation) =>
+	// 		plDateStringToDate(reservation.date).valueOf() + msPerDay < new Date().valueOf()
+	// );
+
+	fakeReservationDb.sort(
+		(a, b) => plDateStringToDate(a.date).valueOf() - plDateStringToDate(b.date).valueOf()
+	);
+	console.log(fakeReservationDb);
+
+	fakeWorkplaceDb.forEach((workplace) => {
+		const closestReservation = fakeReservationDb.find(
+			(reservation) => reservation.workplaceNumber === workplace.number
+		);
+		if (!closestReservation) return;
+
+		const numString = ('000' + closestReservation.userId).slice(-4);
+		espFetch(`?data=${numString}`, 'GET');
+	});
+}
+
+function plDateStringToDate(s: string) {
+	const [day, month, year] = s.split('.');
+	return new Date(`${month}.${day}.${year}`);
+}
