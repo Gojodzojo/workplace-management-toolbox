@@ -36,7 +36,7 @@ void app_main(void)
     OLED_structure_builder();
     USER_SWITCH_init();
     OLED_print_integer_number(PAGE_5,4,Work_station_num);
-    OLED_print_integer_number(PAGE_1,4,Defoult_user_data);
+    OLED_print_integer_number(PAGE_1,4,Defoult_user_data_id);
     OLED_print_PEADLOCK(PEDLOCK_OPEN);
 
     gpio_reset_pin(2);
@@ -53,10 +53,17 @@ void app_main(void)
     while (1)
     {
         vTaskDelay(25 / portTICK_PERIOD_MS);
-        if (pass_new_data_info() == 0x01)
+        if (pass_new_data_user_id_info() == 0x01)
         {
-            OLED_print_integer_number(PAGE_1,4,pass_user_info());
-            clear_new_data();
+            OLED_print_integer_number(PAGE_1,4,pass_user_id_info());
+            clear_new_data_user_id_info();
+        }
+
+        if (pass_new_data_user_pl_info() == 0x01)
+        {
+            if (pass_user_pl_info() == 1) OLED_print_PEADLOCK(PEDLOCK_CLOSE);
+            if (pass_user_pl_info() == 0) OLED_print_PEADLOCK(PEDLOCK_OPEN);
+            clear_new_data_user_pl_info();
         }
 
         //ESP_LOGI(TAG,"Switch %d",gpio_get_level(SWITCH_PIN));

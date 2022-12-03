@@ -1,7 +1,10 @@
 #include "web_serwer.h"
 
-uint32_t user_data = Defoult_user_data;
-uint8_t is_new_data = 0;
+uint32_t user_data_id = Defoult_user_data_id;
+uint8_t is_new_data_id = 0;
+
+uint32_t user_data_pl = 1;
+uint8_t is_new_data_pl = 0;
 
 static const char *TAG = "WebSerwer";
 
@@ -20,16 +23,27 @@ esp_err_t Web_serwer_data_in_handler( httpd_req_t *req, uint8_t output_data)
 
     memset(data_from_request,0,req_len);
 
-    httpd_query_key_value(req_buf,REQUEST_KEY_VALUE,data_from_request,req_len);
+    httpd_query_key_value(req_buf,REQUEST_KEY_VALUE_ID,data_from_request,req_len);
 
     if (data_from_request[0] != 0)
     {
-        user_data = 0;
+        user_data_id = 0;
         for (uint8_t i = 0; i < 4; i++)
         {
-            user_data += (data_from_request[i] - 0x30) * pow(10,(3 - i));
+            user_data_id += (data_from_request[i] - 0x30) * pow(10,(3 - i));
         }
-        is_new_data = 0x1;
+        is_new_data_id = 0x1;
+    }
+
+    memset(data_from_request,0,req_len);
+
+    httpd_query_key_value(req_buf,REQUEST_KEY_VALUE_PEADLOCK,data_from_request,req_len);
+
+    if (data_from_request[0] != 0)
+    {
+        user_data_pl = (data_from_request[0] - 0x30);
+        if (user_data_pl > 1) user_data_pl = 1;
+        is_new_data_pl = 1;
     }
 
     httpd_resp_sendstr_chunk(req, 
@@ -122,17 +136,32 @@ void web_serwer_init(void)
     start_webserver(); 
 }
 
-uint32_t pass_user_info(void)
+uint32_t pass_user_id_info(void)
 {
-    return user_data;
+    return user_data_id;
 }
 
-uint8_t pass_new_data_info(void)
+uint8_t pass_new_data_user_id_info(void)
 {
-    return is_new_data;
+    return is_new_data_id;
 }
 
-void clear_new_data(void)
+void clear_new_data_user_id_info(void)
 {
-   is_new_data = false; 
+   is_new_data_id = false; 
+}
+
+uint8_t pass_user_pl_info(void)
+{
+    return user_data_pl;
+}
+
+uint8_t pass_new_data_user_pl_info(void)
+{
+    return is_new_data_pl;
+}
+
+void clear_new_data_user_pl_info(void)
+{
+   is_new_data_pl = false; 
 }
