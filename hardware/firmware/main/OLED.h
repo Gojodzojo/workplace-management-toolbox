@@ -48,6 +48,11 @@
 #define MODE_INDICATOR_PAGE PAGE_2
 #define MODE_INDICATOR_COLUMN 5
 
+#define PEDLOCK_CLOSE 9
+#define PEDLOCK_OPEN 19
+#define PEADLOCK_POSITION 25
+#define PEADLOCK_PAGE PAGE_1
+
 void OLED_init(void);
 void OLED_write_to_page(uint8_t page,uint8_t* data,uint8_t data_len);
 void OLED_clear(void);
@@ -57,4 +62,4 @@ void OLED_print_num(uint8_t down_page,uint8_t position,uint8_t num);
 void OLED_print_num_ascii(uint8_t down_page,uint8_t position,uint8_t num);
 void OLED_print_integer_number(uint8_t down_page,uint8_t starrt_position,uint32_t number_input);
 void I2C_send_1byte_command(uint8_t command);
-
+void OLED_print_PEADLOCK(uint8_t peadlock_info);

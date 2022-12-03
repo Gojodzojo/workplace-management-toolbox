@@ -5,12 +5,12 @@ i2c_port_t I2C_port = I2C_NUM_0;
 static const char *TAG = "OLED";
 
 uint8_t char_tab[2][16] = {
-    {0x00,0x08,0xf8,0x08,0xf8,0x08,0x10,0xE0,0xf8,0x30,0x30,0xf8,0x98,0x88,0x88,0xf8},
-    {0x00,0x10,0x1f,0x10,0x1f,0x10,0x08,0x07,0x1f,0x00,0x00,0x1f,0x1f,0x11,0x11,0x19}
+    {0x00,0x08,0xf8,0x08,0xf8,0x08,0x10,0xE0,0xf8,0x30,0x30,0xf8,0xf8,0x80,0x80,0x00},
+    {0x00,0x10,0x1f,0x10,0x1f,0x10,0x08,0x07,0x1f,0x00,0x00,0x1f,0x1f,0x10,0x10,0x0f}
 };
 
 uint8_t char_encoding[2][4] = {
-    {'I','D','W','S'},
+    {'I','D','W','P'},
     {3,7,11,15}
 };
 
@@ -29,6 +29,11 @@ uint8_t num_encoding[2][10] = {
 uint8_t num_encoding_ascii[2][10] = {
     {'1','2','3','4','5','6','7','8','9','0'},
     {3,7,11,15,19,23,27,31,35,39}
+};
+
+uint8_t peadlock_tab[2][20] = {
+    {0xFC,0xFC,0xFC,0xFC,0xFC,0xFC,0xFC,0xFC,0xFC,0xFC,0xFC,0xFC,0xFC,0xFC,0xFC,0xFC,0xFC,0xFC,0xFC,0xFC},
+    {0x00,0x0F,0x3F,0x30,0x30,0x30,0x30,0x3F,0x0F,0x00,0x00,0x0F,0x3F,0x30,0x30,0x30,0x30,0x38,0x08,0x00}
 };
 
 void I2C_init(uint32_t FREQ)
@@ -125,7 +130,7 @@ void OLED_structure_builder(void)
     OLED_print_char(PAGE_1 ,1, 'D');
 
     OLED_print_char(PAGE_5 ,0, 'W');
-    OLED_print_char(PAGE_5 ,1, 'S');
+    OLED_print_char(PAGE_5 ,1, 'P');
 }
 
 void OLED_print_char(uint8_t down_page,uint8_t position,uint8_t character)
@@ -250,6 +255,28 @@ void OLED_print_num_ascii(uint8_t down_page,uint8_t position,uint8_t num)
         {
             I2C_send_1byte_data(num_tab[1][num_offset - i]);
         }
+    }
+
+}
+
+void OLED_print_PEADLOCK(uint8_t peadlock_info)
+{
+    I2C_send_1byte_command(SSD1306_LOWER_COLUMN_START_ADRESS | (PEADLOCK_POSITION & 0xf));
+    I2C_send_1byte_command(SSD1306_HIGER_COLUMN_START_ADRESS | (PEADLOCK_POSITION >> 4));
+    I2C_send_1byte_command(SSD1306_PAGE_START_ADDRESS | PEADLOCK_PAGE);
+
+    for (uint8_t i = 0; i < 10; i++)
+    {
+        I2C_send_1byte_data(peadlock_tab[0][peadlock_info - i]);
+    }
+
+    I2C_send_1byte_command(SSD1306_LOWER_COLUMN_START_ADRESS | (PEADLOCK_POSITION & 0xf));
+    I2C_send_1byte_command(SSD1306_HIGER_COLUMN_START_ADRESS | (PEADLOCK_POSITION >> 4));
+    I2C_send_1byte_command(SSD1306_PAGE_START_ADDRESS | (PEADLOCK_PAGE + 1));
+    
+    for (uint8_t i = 0; i < 10; i++)
+    {
+        I2C_send_1byte_data(peadlock_tab[1][peadlock_info - i]);
     }
 
 }
