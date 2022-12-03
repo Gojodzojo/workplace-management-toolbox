@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { authStore } from '$lib/stores';
+	import { authStore, isAuthModalOpen } from '$lib/stores';
 	import {
 		Header,
 		HeaderAction,
@@ -15,13 +15,12 @@
 
 	let isSideNavOpen = false;
 	let isMenuOpen = false;
-	let isAuthModalOpen = false;
 
 	function handleProfileClick() {
 		if ($authStore) {
 			goto('/user');
 		} else {
-			isAuthModalOpen = true;
+			$isAuthModalOpen = true;
 		}
 		isMenuOpen = false;
 	}
@@ -62,7 +61,7 @@
 	</HeaderUtilities>
 </Header>
 
-<AuthModal bind:open={isAuthModalOpen} />
+<AuthModal />
 
 <style>
 	:global(header a.bx--header__name) {

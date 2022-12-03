@@ -6,3 +6,5 @@ export interface AuthState {
 }
 
 export const authStore = writable<AuthState | undefined>(undefined);
+
+export const isAuthModalOpen = writable(false);

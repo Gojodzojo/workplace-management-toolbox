@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { apiFetch, protectedApiFetch } from '$lib/scripts';
 	import { Modal, Select, SelectItem } from 'carbon-components-svelte';
+	import { authStore } from '$lib/stores';
+	import { goto } from '$app/navigation';
 
 	export let date: string | undefined;
 
@@ -12,53 +14,54 @@
 	$: freeWorkplacesPromise = getWorkplaces(date);
 
 	async function addReservation() {
-		await protectedApiFetch('/add-reservation', 'PUT', {
+		const r = await protectedApiFetch('/add-reservation', 'PUT', {
 			date,
 			workplaceNumber: selectedWorkplaceNumber
 		});
+		console.log(r);
 		date = undefined;
 	}
 
 	let selectedWorkplaceNumber = 1;
 </script>
 
-<Modal
-	size="sm"
-	open={date !== undefined}
-	modalHeading="Take Workplace"
-	primaryButtonText="Make reservation"
-	secondaryButtonText="Cancel"
-	preventCloseOnClickOutside
-	on:close={() => {
-		date = undefined;
-		console.log(date);
-	}}
-	hasForm
-	on:open
-	on:submit={addReservation}
->
-	{#if date}
-		{#await freeWorkplacesPromise}
-			loading
-		{:then { workplaces }}
-			<p>{date}</p>
-			<br />
+{#if !$authStore}
+	{goto('/')}
+{:else}
+	<Modal
+		size="sm"
+		open={date !== undefined}
+		modalHeading="Take Workplace"
+		primaryButtonText="Make reservation"
+		secondaryButtonText="Cancel"
+		preventCloseOnClickOutside
+		hasForm
+		on:open
+		on:submit={addReservation}
+	>
+		{#if date}
+			{#await freeWorkplacesPromise}
+				loading
+			{:then { workplaces }}
+				<p>{date}</p>
+				<br />
 
-			<Select
-				id="SelectNumber"
-				labelText="Select workspace"
-				bind:selected={selectedWorkplaceNumber}
-			>
-				{#each workplaces as { description, workplaceNumber }}
-					<SelectItem value={workplaceNumber} text={description} />
-				{/each}
-			</Select>
-		{/await}
-	{/if}
-</Modal>
+				<Select
+					id="SelectNumber"
+					labelText="Select workspace"
+					bind:selected={selectedWorkplaceNumber}
+				>
+					{#each workplaces as { description, workplaceNumber }}
+						<SelectItem value={workplaceNumber} text={description} />
+					{/each}
+				</Select>
+			{/await}
+		{/if}
+	</Modal>
 
-<style>
-	:global(.bx--modal-content) {
-		overflow: hidden !important;
-	}
-</style>
+	<style>
+		:global(.bx--modal-content) {
+			overflow: hidden !important;
+		}
+	</style>
+{/if}

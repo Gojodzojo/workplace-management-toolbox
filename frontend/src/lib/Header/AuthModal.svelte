@@ -1,12 +1,10 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import type { AuthData } from '$common/RequestTypes';
-	import type { TokensResponse } from '$common/ResponseTypes';
 	import { apiFetch } from '$lib/scripts';
-	import { authStore } from '$lib/stores';
+	import { authStore, isAuthModalOpen } from '$lib/stores';
 	import { Modal, PasswordInput, TextInput } from 'carbon-components-svelte';
 
-	export let open = false;
 	let username = '';
 	let password = '';
 	let errorBoxContent = '';
@@ -20,7 +18,7 @@
 				errorBoxContent = tokensOrStatus.status;
 			} else {
 				$authStore = tokensOrStatus;
-				open = false;
+				$isAuthModalOpen = false;
 				username = '';
 				password = '';
 				goto('/user');
@@ -40,7 +38,7 @@
 				errorBoxContent = tokensOrStatus.status;
 			} else {
 				$authStore = tokensOrStatus;
-				open = false;
+				$isAuthModalOpen = false;
 				username = '';
 				password = '';
 				goto('/user');
@@ -54,7 +52,7 @@
 
 <Modal
 	size="sm"
-	bind:open
+	bind:open={$isAuthModalOpen}
 	modalHeading="Login or register"
 	primaryButtonText="Login"
 	secondaryButtonText="Register"

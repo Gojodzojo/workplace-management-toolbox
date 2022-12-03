@@ -9,3 +9,10 @@
 <Content>
 	<slot />
 </Content>
+
+<style>
+	:global(.bx--content) {
+		box-sizing: border-box;
+		min-height: calc(100vh - 3rem);
+	}
+</style>
