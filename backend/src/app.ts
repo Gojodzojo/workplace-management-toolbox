@@ -196,9 +196,11 @@ app.post(
 	}
 );
 
-app.get('/button', (req: TypedRequest<{}, { wp: string }, {}>, res: TypedResponse) => {
+app.get('/button', async (req: TypedRequest<{}, { wp: string }, {}>, res: TypedResponse) => {
 	const { wp } = req.query;
 	console.log(wp);
+
+	await fetch('?peadlock=0');
 	res.send('Success');
 });
 
