@@ -16,3 +16,7 @@ export type AddReservationRequest = {
 export type GetUserReservationsRequest = {
   accessToken: string;
 };
+
+export type GetFreeWorkplacesRequest = {
+  date: number;
+};

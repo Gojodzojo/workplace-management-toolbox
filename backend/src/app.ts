@@ -9,10 +9,12 @@ import type {
 	AccessTokenRequest,
 	AddReservationRequest,
 	AuthData,
+	GetFreeWorkplacesRequest,
 	GetUserReservationsRequest
 } from '$common/RequestTypes';
 import type {
 	AccessTokenResponse,
+	GetFreeWorkplacesResponse,
 	GetUserReservationsResponse,
 	StatusResponse,
 	TokensResponse
@@ -166,6 +168,26 @@ app.post(
 
 			res.json(response);
 		});
+	}
+);
+
+app.post(
+	'/get-free-workplaces',
+	(req: TypedRequest<GetFreeWorkplacesRequest>, res: TypedResponse<GetFreeWorkplacesResponse>) => {
+		const { date } = req.body;
+
+		let workplaces = fakeWorkplaceDb.map(({ number: workplaceNumber, description }) => ({
+			workplaceNumber,
+			description
+		}));
+
+		fakeReservationDb.forEach((r) => {
+			if (r.date === date) {
+				workplaces = workplaces.filter((w) => w.workplaceNumber !== r.workplaceNumber);
+			}
+		});
+
+		res.json({ workplaces });
 	}
 );
 

@@ -16,12 +16,18 @@ export type AccessTokenResponse =
     }
   | StatusResponse;
 
+export type ReservationInResponse = {
+  date: number;
+  workplaceNumber: number;
+  description: string;
+};
+
 export type GetUserReservationsResponse =
   | {
-      reservations: {
-        date: number;
-        workplaceNumber: number;
-        description: string;
-      }[];
+      reservations: ReservationInResponse[];
     }
   | StatusResponse;
+
+export type GetFreeWorkplacesResponse = {
+  workplaces: { workplaceNumber: number; description: string }[];
+};
