@@ -10,7 +10,6 @@
 	}
 
 	function toRows(reservation: ReservationInResponse) {
-		console.log(reservation);
 		return { ...reservation, id: reservation.date, delRes: "delete" };
 	}
 

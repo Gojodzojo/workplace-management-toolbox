@@ -13,13 +13,11 @@
 	}
 
 	async function addReservation() {
-		// Dodać obsługę błędów
 		const resp = await protectedApiFetch('/add-reservation', 'PUT', {
 			date,
 			workplaceNumber: selectedWorkplaceNumber
 		});
 		date = undefined;
-		console.log(resp);
 	}
 
 	let selectedWorkplaceNumber = 1;

@@ -24,7 +24,7 @@ import { espFetch } from './espFetch';
 
 const SALT_ROUNDS = 10;
 const port = 3001;
-const TIMEOUT = 60000;
+const TIMEOUT = 15000;
 
 loadEnv();
 const { REFRESH_TOKEN_SECRET, ACCESS_TOKEN_SECRET } = process.env;
@@ -46,7 +46,7 @@ const fakeWorkplaceDb: Workplace[] = [
 		number: 1,
 		description: 'this is description for workplace 1',
 		espUrl: 'http://192.168.5.52',
-		computerUrl: 'http://192.168.5.52'
+		computerUrl: 'http://192.168.5.227:3000/'
 	},
 	{ number: 2, description: 'this is description for workplace 2', espUrl: '', computerUrl: '' },
 	{ number: 3, description: 'this is description for workplace 3', espUrl: '', computerUrl: '' }

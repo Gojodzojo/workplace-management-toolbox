@@ -1,9 +1,10 @@
 import express from 'express'
 import { exec } from 'child_process'
+import {readFileSync} from "fs"
 const app = express()
 const port = 3000
 
-let rawdata = fs.readFileSync('apps.json');
+let rawdata = readFileSync('apps.json');
 let apps = JSON.parse(rawdata);
 
 app.get('/', (req, res) => {
