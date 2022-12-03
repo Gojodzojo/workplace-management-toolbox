@@ -15,17 +15,26 @@
 </script>
 
 <Tile>
-	<h1>Reservate your workplace</h1>
-	<br /> 
-	{#each days as day}
-		<Button class="dayBtn" on:click={() => (clickedDate = day)}>{day}</Button>
-	{/each}
+	<h1>Reserve your workplace</h1>
+	<br />
+	<div class="btns-container">
+		{#each days as day}
+			<Button class="day-btn" kind="tertiary" on:click={() => (clickedDate = day)}>{day}</Button>
+		{/each}
+	</div>
 </Tile>
 
 <WorkplaceForm date={clickedDate} />
 
 <style>
-	:global(.dayBtn) {
+	.btns-container {
+		display: flex;
+		width: 100%;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+
+	.btns-container :global(.day-btn) {
 		margin: 5px;
 	}
 </style>

@@ -1,8 +1,6 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { apiFetch, protectedApiFetch } from '$lib/scripts';
 	import { Modal, Select, SelectItem } from 'carbon-components-svelte';
-	import { Close } from 'carbon-icons-svelte';
 
 	export let date: string | undefined;
 
@@ -11,9 +9,10 @@
 	}> {
 		return await apiFetch('/get-free-workplaces', 'POST', { date });
 	}
+	$: freeWorkplacesPromise = getWorkplaces(date);
 
 	async function addReservation() {
-		const resp = await protectedApiFetch('/add-reservation', 'PUT', {
+		await protectedApiFetch('/add-reservation', 'PUT', {
 			date,
 			workplaceNumber: selectedWorkplaceNumber
 		});
@@ -21,8 +20,6 @@
 	}
 
 	let selectedWorkplaceNumber = 1;
-	// $: selectedWorkplace = workplaces.find((w) => w.number == selectedWorkplaceNumber)!;
-	$: freeWorkplacesPromise = getWorkplaces(date);
 </script>
 
 <Modal
@@ -30,9 +27,14 @@
 	open={date !== undefined}
 	modalHeading="Take Workplace"
 	primaryButtonText="Make reservation"
+	secondaryButtonText="Cancel"
+	preventCloseOnClickOutside
+	on:close={() => {
+		date = undefined;
+		console.log(date);
+	}}
 	hasForm
 	on:open
-	on:close={() => (date = undefined)}
 	on:submit={addReservation}
 >
 	{#if date}
@@ -40,6 +42,7 @@
 			loading
 		{:then { workplaces }}
 			<p>{date}</p>
+			<br />
 
 			<Select
 				id="SelectNumber"
@@ -47,7 +50,7 @@
 				bind:selected={selectedWorkplaceNumber}
 			>
 				{#each workplaces as { description, workplaceNumber }}
-					<SelectItem value={workplaceNumber} />
+					<SelectItem value={workplaceNumber} text={description} />
 				{/each}
 			</Select>
 		{/await}

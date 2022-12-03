@@ -11,7 +11,6 @@
 		SkipToContent,
 		Button
 	} from 'carbon-components-svelte';
-	import UserAvatarFilledAlt from 'carbon-icons-svelte/lib/UserAvatarFilledAlt.svelte';
 	import AuthModal from './AuthModal.svelte';
 
 	let isSideNavOpen = false;
@@ -29,7 +28,7 @@
 </script>
 
 <Header bind:isSideNavOpen>
-	<Button style="logo" href="/" kind="ghost">AppName</Button>
+	<Button style="logo" href="/" kind="ghost">Workplace Management Toolbox</Button>
 
 	<svelte:fragment slot="skip-to-content">
 		<SkipToContent />
@@ -43,7 +42,7 @@
 						href="/workplace_form"
 						on:click={() => {
 							isMenuOpen = false;
-						}}>Form</HeaderPanelLink
+						}}>Reserve workplace</HeaderPanelLink
 					>
 					<HeaderPanelLink
 						href="/user"
@@ -66,7 +65,12 @@
 <AuthModal bind:open={isAuthModalOpen} />
 
 <style>
-	:global(a.bx--header__name) {
-		display: none;
+	:global(header a.bx--header__name) {
+		display: none !important;
+	}
+
+	:global(header .bx--btn) {
+		font-weight: bolder !important;
+		color: white;
 	}
 </style>
