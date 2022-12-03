@@ -1,7 +1,8 @@
 export type Workplace = {
   number: number;
   description: string;
-  url: string;
+  espUrl: string;
+  computerUrl: string;
 };
 
 export type Reservation = {

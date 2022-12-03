@@ -24,7 +24,7 @@ import { espFetch } from './espFetch';
 
 const SALT_ROUNDS = 10;
 const port = 3001;
-const TIMEOUT=60000;
+const TIMEOUT = 60000;
 
 loadEnv();
 const { REFRESH_TOKEN_SECRET, ACCESS_TOKEN_SECRET } = process.env;
@@ -42,9 +42,14 @@ app.use(staticDir('public'));
 let fakeUserDB: UserDbEntry[] = [];
 let fakeReservationDb: Reservation[] = [];
 const fakeWorkplaceDb: Workplace[] = [
-	{ number: 1, description: 'this is description for workplace 1', url: 'http://192.168.5.52' },
-	{ number: 2, description: 'this is description for workplace 2', url: '' },
-	{ number: 3, description: 'this is description for workplace 3', url: '' }
+	{
+		number: 1,
+		description: 'this is description for workplace 1',
+		espUrl: 'http://192.168.5.52',
+		computerUrl: 'http://192.168.5.52'
+	},
+	{ number: 2, description: 'this is description for workplace 2', espUrl: '', computerUrl: '' },
+	{ number: 3, description: 'this is description for workplace 3', espUrl: '', computerUrl: '' }
 ];
 
 app.post('/login', async (req: TypedRequest<AuthData>, res: TypedResponse<TokensResponse>) => {
@@ -65,7 +70,6 @@ app.post('/login', async (req: TypedRequest<AuthData>, res: TypedResponse<Tokens
 	const accessToken = sign({ id: foundUser.id }, ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
 	const refreshToken = sign({ id: foundUser.id }, REFRESH_TOKEN_SECRET, { expiresIn: '1y' });
 
-	console.log(`Logged in. Username: ${username}, password: ${password}`);
 	res.json({ accessToken, refreshToken });
 });
 
@@ -79,7 +83,6 @@ app.put('/register', async (req: TypedRequest<AuthData>, res: TypedResponse<Toke
 	}
 
 	const hashedPassword = await hash(password, SALT_ROUNDS);
-	console.log(hashedPassword);
 
 	let id = 0;
 	while (true) {
@@ -92,7 +95,6 @@ app.put('/register', async (req: TypedRequest<AuthData>, res: TypedResponse<Toke
 	const accessToken = sign({ id }, ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
 	const refreshToken = sign({ id }, REFRESH_TOKEN_SECRET, { expiresIn: '1y' });
 
-	console.log(`Registered. Username: ${username}, password: ${password}`);
 	res.json({ accessToken, refreshToken });
 });
 
@@ -152,7 +154,6 @@ app.post(
 		const { accessToken } = req.body;
 
 		verify(accessToken, ACCESS_TOKEN_SECRET, async (err, payload) => {
-			console.log(err);
 			if (err || !payload || typeof payload === 'string') {
 				res.status(401).json({ status: 'Bad access token' });
 				return;
@@ -199,13 +200,22 @@ let timeout: NodeJS.Timeout | undefined;
 
 app.get('/button', async (req: TypedRequest<{}, { wp: string }, {}>, res: TypedResponse) => {
 	const { wp } = req.query;
-	console.log(wp);
-	if(timeout){
+	const workplace = fakeWorkplaceDb.find(({ number }) => number.toString() === wp);
+
+	if (!workplace) return;
+
+	await espFetch(workplace.computerUrl, 'GET');
+
+	if (timeout) {
 		clearTimeout(timeout);
 	}
-	timeout =  setTimeout(() => {espFetch('?peadlock=1', "GET");}, TIMEOUT);
-	await espFetch('?peadlock=0', "GET");
-	
+
+	timeout = setTimeout(() => {
+		espFetch(workplace.espUrl + '?peadlock=1', 'GET');
+	}, TIMEOUT);
+
+	await espFetch(workplace.espUrl + '?peadlock=0', 'GET');
+
 	res.send('Success');
 });
 
@@ -233,7 +243,6 @@ function updateWorkplaces() {
 	fakeReservationDb.sort(
 		(a, b) => plDateStringToDate(a.date).valueOf() - plDateStringToDate(b.date).valueOf()
 	);
-	console.log(fakeReservationDb);
 
 	fakeWorkplaceDb.forEach((workplace) => {
 		const closestReservation = fakeReservationDb.find(
@@ -242,7 +251,7 @@ function updateWorkplaces() {
 		if (!closestReservation) return;
 
 		const numString = ('000' + closestReservation.userId).slice(-4);
-		espFetch(`?data=${numString}`, 'GET');
+		espFetch(`${workplace.espUrl}?data=${numString}`, 'GET').catch(console.error);
 	});
 }
 
