@@ -196,10 +196,9 @@ app.post(
 	}
 );
 
-app.get('/button', (req: TypedRequest<{}, {}, { wp: string }>, res: TypedResponse) => {
-	const { wp } = req.params;
+app.get('/button', (req: TypedRequest<{}, { wp: string }, {}>, res: TypedResponse) => {
+	const { wp } = req.query;
 	console.log(wp);
-	console.log('siemano');
 	res.send('Success');
 });
 
