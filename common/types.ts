@@ -9,7 +9,7 @@ export type Workplace = {
 };
 
 export type Reservation = {
-  date: number;
+  date: string;
   userId: number;
   workplaceNumber: number;
 };

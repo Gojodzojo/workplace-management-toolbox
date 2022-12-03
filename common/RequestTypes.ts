@@ -8,7 +8,7 @@ export type AccessTokenRequest = {
 };
 
 export type AddReservationRequest = {
-  date: number;
+  date: string;
   workplaceNumber: number;
   accessToken: string;
 };
@@ -18,5 +18,5 @@ export type GetUserReservationsRequest = {
 };
 
 export type GetFreeWorkplacesRequest = {
-  date: number;
+  date: string;
 };

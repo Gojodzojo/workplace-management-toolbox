@@ -2,7 +2,7 @@
 	import WorkplaceForm from '$lib/WorkplaceForm/WorkplaceForm.svelte';
 	import type { Day } from '$common/types';
 	import { Button } from 'carbon-components-svelte';
-	import { formatDate } from '$lib/scripts';
+	import { formatDate } from '$common/scripts';
 
 	let days: Day[] = [
 		{ date: new Date('02.12.2022'), isFull: true },

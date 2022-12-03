@@ -36,7 +36,3 @@ export async function protectedApiFetch<T extends object>(url: string, method: s
 
 	return await apiFetch(url, method, { accessToken, ...b });
 }
-
-export function formatDate(d: Date) {
-	return d.toLocaleDateString([], { day: '2-digit', month: '2-digit', year: 'numeric' });
-}

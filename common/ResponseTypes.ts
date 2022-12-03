@@ -17,7 +17,7 @@ export type AccessTokenResponse =
   | StatusResponse;
 
 export type ReservationInResponse = {
-  date: number;
+  date: string;
   workplaceNumber: number;
   description: string;
 };
