@@ -149,6 +149,7 @@ app.post(
 		const { accessToken } = req.body;
 
 		verify(accessToken, ACCESS_TOKEN_SECRET, async (err, payload) => {
+			console.log(err)
 			if (err || !payload || typeof payload === 'string') {
 				res.status(401).json({ status: 'Bad access token' });
 				return;

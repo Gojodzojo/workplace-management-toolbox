@@ -1,8 +1,3 @@
-export type Day = {
-  date: Date;
-  isFull: boolean;
-};
-
 export type Workplace = {
   number: number;
   description: string;

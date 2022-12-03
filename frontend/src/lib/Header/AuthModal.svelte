@@ -14,8 +14,7 @@
 	async function login() {
 		try {
 			const body: AuthData = { username, password };
-			const response = await apiFetch('/login', 'POST', body);
-			const tokensOrStatus: TokensResponse = await response.json();
+			const tokensOrStatus = await apiFetch('/login', 'POST', body);
 
 			if ('status' in tokensOrStatus) {
 				errorBoxContent = tokensOrStatus.status;
@@ -35,8 +34,7 @@
 	async function register() {
 		try {
 			const body: AuthData = { username, password };
-			const response = await apiFetch('/register', 'PUT', body);
-			const tokensOrStatus: TokensResponse = await response.json();
+			const tokensOrStatus = await apiFetch('/register', 'PUT', body);
 
 			if ('status' in tokensOrStatus) {
 				errorBoxContent = tokensOrStatus.status;

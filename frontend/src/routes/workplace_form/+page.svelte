@@ -1,19 +1,21 @@
 <script lang="ts">
 	import WorkplaceForm from '$lib/WorkplaceForm/WorkplaceForm.svelte';
-	import type { Day } from '$common/types';
 	import { Button } from 'carbon-components-svelte';
-	import { formatDate } from '$common/scripts';
+	import { formatDate } from '$lib/scripts';
 
-	let days: Day[] = [
-		{ date: new Date('02.12.2022'), isFull: true },
-		{ date: new Date('02.12.2022'), isFull: false }
-	];
+	let days: string[] = [];
 
-	let clickedDate: Date | undefined = undefined;
+	for (let index = 0; index < 30; index++) {
+		const date = new Date();
+		date.setDate(date.getDate() + index);
+		days.push(formatDate(date));
+	}
+
+	let clickedDate: string | undefined = undefined;
 </script>
 
-{#each days as { date, isFull }}
-	<Button on:click={() => (clickedDate = date)} disabled={isFull}>{formatDate(date)}</Button>
+{#each days as day}
+	<Button on:click={() => (clickedDate = day)}>{day}</Button>
 {/each}
 
 <WorkplaceForm date={clickedDate} />
