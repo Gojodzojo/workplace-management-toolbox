@@ -40,9 +40,9 @@ app.use(staticDir('public'));
 let fakeUserDB: UserDbEntry[] = [];
 let fakeReservationDb: Reservation[] = [];
 const fakeWorkplaceDb: Workplace[] = [
-	{ number: 1, description: 'this is description for workplace 1' },
-	{ number: 2, description: 'this is description for workplace 2' },
-	{ number: 3, description: 'this is description for workplace 3' }
+	{ number: 1, description: 'this is description for workplace 1', url: 'http://192.168.5.52' },
+	{ number: 2, description: 'this is description for workplace 2', url: '' },
+	{ number: 3, description: 'this is description for workplace 3', url: '' }
 ];
 
 app.post('/login', async (req: TypedRequest<AuthData>, res: TypedResponse<TokensResponse>) => {
@@ -134,6 +134,7 @@ app.put(
 
 			const { id: userId } = payload;
 			fakeReservationDb.push({ date, userId, workplaceNumber });
+			// fakeReservationDb.sort((a, b) => a.date - b.date)
 
 			res.json({ status: 'Success' });
 		});
@@ -149,7 +150,7 @@ app.post(
 		const { accessToken } = req.body;
 
 		verify(accessToken, ACCESS_TOKEN_SECRET, async (err, payload) => {
-			console.log(err)
+			console.log(err);
 			if (err || !payload || typeof payload === 'string') {
 				res.status(401).json({ status: 'Bad access token' });
 				return;
@@ -191,6 +192,13 @@ app.post(
 		res.json({ workplaces });
 	}
 );
+
+app.get('/button', (req: TypedRequest<{}, {}, { wp: string }>, res: TypedResponse) => {
+	const { wp } = req.params;
+	console.log(wp);
+
+	res.send('Success');
+});
 
 app.get('*', (_, res) => {
 	res.sendFile(resolvePath(__dirname + '/../public/index.html'));
