@@ -44,12 +44,12 @@ let fakeReservationDb: Reservation[] = [];
 const fakeWorkplaceDb: Workplace[] = [
 	{
 		number: 1,
-		description: 'this is description for workplace 1',
+		description: 'Workplace 1',
 		espUrl: 'http://192.168.5.52',
 		computerUrl: 'http://192.168.5.227:3000/'
 	},
-	{ number: 2, description: 'this is description for workplace 2', espUrl: '', computerUrl: '' },
-	{ number: 3, description: 'this is description for workplace 3', espUrl: '', computerUrl: '' }
+	{ number: 2, description: 'Workplace 2', espUrl: '', computerUrl: '' },
+	{ number: 3, description: 'Workplace 3', espUrl: '', computerUrl: '' }
 ];
 
 app.post('/login', async (req: TypedRequest<AuthData>, res: TypedResponse<TokensResponse>) => {
