@@ -24,6 +24,7 @@ import { espFetch } from './espFetch';
 
 const SALT_ROUNDS = 10;
 const port = 3001;
+const TIMEOUT=60000;
 
 loadEnv();
 const { REFRESH_TOKEN_SECRET, ACCESS_TOKEN_SECRET } = process.env;
@@ -196,11 +197,17 @@ app.post(
 	}
 );
 
+let timeout: NodeJS.Timeout | undefined;
+
 app.get('/button', async (req: TypedRequest<{}, { wp: string }, {}>, res: TypedResponse) => {
 	const { wp } = req.query;
 	console.log(wp);
-
-	await fetch('?peadlock=0');
+	if(timeout){
+		clearTimeout(timeout);
+	}
+	timeout =  setTimeout(() => {espFetch('?peadlock=1', "GET");}, TIMEOUT);
+	await espFetch('?peadlock=0', "GET");
+	
 	res.send('Success');
 });
 
