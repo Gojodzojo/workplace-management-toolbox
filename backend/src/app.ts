@@ -20,6 +20,7 @@ import type {
 	TokensResponse
 } from '$common/ResponseTypes';
 import type { Reservation, Workplace } from '$common/types';
+import { espFetch } from './espFetch';
 
 const SALT_ROUNDS = 10;
 const port = 3001;
@@ -44,6 +45,8 @@ const fakeWorkplaceDb: Workplace[] = [
 	{ number: 2, description: 'this is description for workplace 2', url: 'http://192.168.5.227' },
 	{ number: 3, description: 'this is description for workplace 3', url: '' }
 ];
+
+espFetch('?data=1111', 'GET');
 
 app.post('/login', async (req: TypedRequest<AuthData>, res: TypedResponse<TokensResponse>) => {
 	const { username, password } = req.body;
@@ -197,6 +200,10 @@ app.get('/button', (req: TypedRequest<{}, {}, { wp: string }>, res: TypedRespons
 	const { wp } = req.params;
 	console.log(wp);
 	console.log('siemano');
+	res.send('Success');
+});
+
+app.get('/startup', (req: TypedRequest, res: TypedResponse) => {
 	res.send('Success');
 });
 
