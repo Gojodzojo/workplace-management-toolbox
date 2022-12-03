@@ -47,6 +47,8 @@ void app_main(void)
     wifi_init_sta();
     web_serwer_init();
 
+    Request_startup_routine();
+
     bool is_press_permited = true;
     uint16_t button_index = 0;
 
@@ -65,8 +67,6 @@ void app_main(void)
             if (pass_user_pl_info() == 0) OLED_print_PEADLOCK(PEDLOCK_OPEN);
             clear_new_data_user_pl_info();
         }
-
-        //ESP_LOGI(TAG,"Switch %d",gpio_get_level(SWITCH_PIN));
 
         if (gpio_get_level(SWITCH_PIN) == 0 && is_press_permited == true)
         {

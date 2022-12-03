@@ -19,7 +19,8 @@
 #define MAX_HTTP_RECV_BUFFER 128
 #define MAX_HTTP_OUTPUT_BUFFER 512
 
-void http_rest_with_url(char* buf, char* host_ip, char* host_path);
+esp_err_t http_rest_with_url(char* buf, char* host_ip, char* host_path);
 void httpd_send_button_data(void);
+void Request_startup_routine(void);
 
 #endif

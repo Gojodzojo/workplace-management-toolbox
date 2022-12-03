@@ -75,9 +75,10 @@ esp_err_t _http_event_handler(esp_http_client_event_t *evt)
     return ESP_OK;
 }
 
-void http_rest_with_url(char* buf, char* host_ip, char* host_path)
+esp_err_t http_rest_with_url(char* buf, char* host_ip, char* host_path)
 {
     char local_response_buffer[MAX_HTTP_OUTPUT_BUFFER] = {0};
+    esp_err_t status = false;
    
     esp_http_client_config_t config = {
         .host = host_ip,
@@ -92,15 +93,21 @@ void http_rest_with_url(char* buf, char* host_ip, char* host_path)
     // GET
     esp_err_t err = esp_http_client_perform(client);
     if (err == ESP_OK) {
+        int status_code = esp_http_client_get_status_code(client);
         ESP_LOGI(TAG, "HTTP GET Status = %d, content_length = %d",
-                esp_http_client_get_status_code(client),
-                esp_http_client_get_content_length(client));               
+                status_code,
+                esp_http_client_get_content_length(client));
+        if (status_code != 200) status = ESP_FAIL;
+        else status = ESP_OK;
+        
     } else {
         ESP_LOGE(TAG, "HTTP GET request failed: %s", esp_err_to_name(err));
+        status = ESP_FAIL; 
     }
     ESP_LOG_BUFFER_HEX(TAG, local_response_buffer, strlen(local_response_buffer));
     //zakończ połączenie z serwerem
     esp_http_client_cleanup(client);
+    return status;
 }
 
 
@@ -108,10 +115,25 @@ void httpd_send_button_data(void)
 {
     char* data_to_send = malloc(50);
     sprintf(data_to_send,"wp=%d",Work_station_num);   
-    http_rest_with_url(data_to_send,Button_service_host_ip,Button_service_path);
+    http_rest_with_url(data_to_send,Service_host_ip,Button_service_path);
     free(data_to_send);
 }
 
+esp_err_t httpd_send_startup_interrupt(void)
+{
+    char* data_to_send = malloc(50);
+    sprintf(data_to_send,"wp=%d",Work_station_num);   
+    esp_err_t err = http_rest_with_url(data_to_send,Service_host_ip,Startup_service_path);
+    free(data_to_send);
+    return err;
+}
 
+void Request_startup_routine(void)
+{
+    for (uint8_t i = 0; i < 3; i++)
+    {
+        if (httpd_send_startup_interrupt() == ESP_OK) break;        
+    }
+}
 
 
