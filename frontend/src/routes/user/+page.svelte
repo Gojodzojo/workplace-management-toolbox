@@ -22,8 +22,7 @@
 	<Grid>
 		<Row>
 			<Column>
-				<h1>User page</h1>
-				<!-- <Button on:click={() => ($authStore = undefined)} kind="danger">Logout</Button> -->
+				<h1>Your reservations</h1>
 			</Column>
 		</Row>
 		<br />
@@ -43,11 +42,6 @@
 					/>
 				{/await}
 			</Column>
-			<Column class="userContent">
-				<Row><Tile><h3>Temperature: {temperature}</h3></Tile></Row>
-				<Row><Tile>some content</Tile></Row>
-				<Row><Tile>some content</Tile></Row>
-			</Column>
 		</Row>
 	</Grid>
 {/if}
@@ -56,23 +50,17 @@
 	:global(.bx--grid) {
 		width: 100%;
 		height: 100vh;
+		display:flex;
+		flex-direction: column;
+		align-items: center;
 	}
 	:global(.table) {
-		width: 40vw;
+		width: 50vw;
 	}
 	:global(.tableContainer) {
 		display: flex;
 		justify-content: center;
 	}
-	:global(.bx--tile){
-		width: 100%;
-		margin: 5px;
-	}
-	:global(.userContent){
-		height: 100%;
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
-	}
+
 	
 </style>
