@@ -37,7 +37,7 @@ void app_main(void)
     USER_SWITCH_init();
     OLED_print_integer_number(PAGE_5,4,Work_station_num);
     OLED_print_integer_number(PAGE_1,4,Defoult_user_data_id);
-    OLED_print_PEADLOCK(PEDLOCK_OPEN);
+    OLED_print_PEADLOCK(PEDLOCK_CLOSE);
 
     gpio_reset_pin(2);
     gpio_set_direction(2,GPIO_MODE_OUTPUT);
