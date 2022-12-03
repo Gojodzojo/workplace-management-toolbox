@@ -24,11 +24,12 @@
 		} else {
 			isAuthModalOpen = true;
 		}
+		isMenuOpen = false;
 	}
 </script>
 
 <Header bind:isSideNavOpen>
-	<Button href="/" kind="ghost">Web app title</Button>
+	<Button style="logo" href="/" kind="ghost">AppName</Button>
 
 	<svelte:fragment slot="skip-to-content">
 		<SkipToContent />
@@ -38,8 +39,18 @@
 		<HeaderAction bind:isOpen={isMenuOpen}>
 			<HeaderPanelLinks>
 				{#if $authStore}
-					<HeaderPanelLink href="/workplace_form">Form</HeaderPanelLink>
-					<HeaderPanelLink href="/user">My profile</HeaderPanelLink>
+					<HeaderPanelLink
+						href="/workplace_form"
+						on:click={() => {
+							isMenuOpen = false;
+						}}>Form</HeaderPanelLink
+					>
+					<HeaderPanelLink
+						href="/user"
+						on:click={() => {
+							isMenuOpen = false;
+						}}>My profile</HeaderPanelLink
+					>
 					<HeaderPanelDivider />
 					<HeaderPanelLink href="/" on:click={() => ($authStore = undefined)}
 						>Log out</HeaderPanelLink
@@ -53,3 +64,9 @@
 </Header>
 
 <AuthModal bind:open={isAuthModalOpen} />
+
+<style>
+	:global(a.bx--header__name) {
+		display: none;
+	}
+</style>

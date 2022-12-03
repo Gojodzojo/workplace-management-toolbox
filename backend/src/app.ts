@@ -41,7 +41,7 @@ let fakeUserDB: UserDbEntry[] = [];
 let fakeReservationDb: Reservation[] = [];
 const fakeWorkplaceDb: Workplace[] = [
 	{ number: 1, description: 'this is description for workplace 1', url: 'http://192.168.5.52' },
-	{ number: 2, description: 'this is description for workplace 2', url: '' },
+	{ number: 2, description: 'this is description for workplace 2', url: 'http://192.168.5.227' },
 	{ number: 3, description: 'this is description for workplace 3', url: '' }
 ];
 
@@ -196,7 +196,7 @@ app.post(
 app.get('/button', (req: TypedRequest<{}, {}, { wp: string }>, res: TypedResponse) => {
 	const { wp } = req.params;
 	console.log(wp);
-
+	console.log('siemano');
 	res.send('Success');
 });
 

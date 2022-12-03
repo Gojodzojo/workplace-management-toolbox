@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Button, Column, Grid, Row, DataTable } from 'carbon-components-svelte';
+	import { Button, Column, Grid, Row, DataTable, Tile } from 'carbon-components-svelte';
 	import { authStore } from '$lib/stores';
 	import { goto } from '$app/navigation';
 	import { apiFetch, protectedApiFetch } from '$lib/scripts';
@@ -11,8 +11,10 @@
 
 	function toRows(reservation: ReservationInResponse) {
 		console.log(reservation);
-		return { ...reservation, id: reservation.date };
+		return { ...reservation, id: reservation.date, delRes: "delete" };
 	}
+
+	let temperature = 24;
 </script>
 
 {#if !$authStore}
@@ -35,11 +37,17 @@
 						class="table"
 						headers={[
 							{ key: 'date', value: 'Date' },
-							{ key: 'workplaceNumber', value: 'Workplace' }
+							{ key: 'workplaceNumber', value: 'Workplace' },
+							{ key: 'delRes', value: 'Del Res' }
 						]}
 						rows={reservations.map(toRows)}
 					/>
 				{/await}
+			</Column>
+			<Column class="userContent">
+				<Row><Tile><h3>Temperature: {temperature}</h3></Tile></Row>
+				<Row><Tile>some content</Tile></Row>
+				<Row><Tile>some content</Tile></Row>
 			</Column>
 		</Row>
 	</Grid>
@@ -47,14 +55,25 @@
 
 <style>
 	:global(.bx--grid) {
-		width: fit-content;
-		height: fit-content;
+		width: 100%;
+		height: 100vh;
 	}
 	:global(.table) {
-		width: 50vw;
+		width: 40vw;
 	}
 	:global(.tableContainer) {
 		display: flex;
 		justify-content: center;
 	}
+	:global(.bx--tile){
+		width: 100%;
+		margin: 5px;
+	}
+	:global(.userContent){
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+	}
+	
 </style>

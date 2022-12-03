@@ -1,6 +1,6 @@
 <script lang="ts">
 	import WorkplaceForm from '$lib/WorkplaceForm/WorkplaceForm.svelte';
-	import { Button } from 'carbon-components-svelte';
+	import { Button, Tile } from 'carbon-components-svelte';
 	import { formatDate } from '$lib/scripts';
 
 	let days: string[] = [];
@@ -14,8 +14,18 @@
 	let clickedDate: string | undefined = undefined;
 </script>
 
-{#each days as day}
-	<Button on:click={() => (clickedDate = day)}>{day}</Button>
-{/each}
+<Tile>
+	<h1>Reservate your workplace</h1>
+	<br /> 
+	{#each days as day}
+		<Button class="dayBtn" on:click={() => (clickedDate = day)}>{day}</Button>
+	{/each}
+</Tile>
 
 <WorkplaceForm date={clickedDate} />
+
+<style>
+	:global(.dayBtn) {
+		margin: 5px;
+	}
+</style>

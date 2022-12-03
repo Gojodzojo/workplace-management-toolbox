@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { apiFetch, protectedApiFetch } from '$lib/scripts';
 	import { Modal, Select, SelectItem } from 'carbon-components-svelte';
+	import { Close } from 'carbon-icons-svelte';
 
 	export let date: string | undefined;
 
@@ -16,6 +18,7 @@
 			date,
 			workplaceNumber: selectedWorkplaceNumber
 		});
+		date = undefined;
 		console.log(resp);
 	}
 
@@ -31,7 +34,7 @@
 	primaryButtonText="Make reservation"
 	hasForm
 	on:open
-	on:close
+	on:close={() => (date = undefined)}
 	on:submit={addReservation}
 >
 	{#if date}
@@ -49,8 +52,6 @@
 					<SelectItem value={workplaceNumber} />
 				{/each}
 			</Select>
-
-			<!-- <p>{selectedWorkplace.description}</p> -->
 		{/await}
 	{/if}
 </Modal>
