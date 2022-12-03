@@ -35,6 +35,7 @@
 		primaryButtonText="Make reservation"
 		secondaryButtonText="Cancel"
 		preventCloseOnClickOutside
+		on:click:button--secondary={() => (date = undefined)}
 		hasForm
 		on:open
 		on:submit={addReservation}
