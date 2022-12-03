@@ -26,7 +26,10 @@ uint8_t num_encoding[2][10] = {
     {3,7,11,15,19,23,27,31,35,39}
 };
 
-
+uint8_t num_encoding_ascii[2][10] = {
+    {'1','2','3','4','5','6','7','8','9','0'},
+    {3,7,11,15,19,23,27,31,35,39}
+};
 
 void I2C_init(uint32_t FREQ)
 {
@@ -209,6 +212,48 @@ void OLED_print_num(uint8_t down_page,uint8_t position,uint8_t num)
 
 }
 
+void OLED_print_num_ascii(uint8_t down_page,uint8_t position,uint8_t num)
+{
+    if (position > 19) position = 19;
+    position = 14 + (19 - position) * 5;              //(127 - position) - 5;  //invert display back and offset character
+
+    uint8_t num_offset = 0;
+
+    for (size_t i = 0; i < 10; i++)
+    {
+        if (num_encoding_ascii[0][i] == num)
+        {
+            num_offset = num_encoding_ascii[1][i];
+        }   
+    }
+
+    if (num_offset != 0)
+    {
+        
+        I2C_send_1byte_command(SSD1306_LOWER_COLUMN_START_ADRESS | (position & 0xf));
+        I2C_send_1byte_command(SSD1306_HIGER_COLUMN_START_ADRESS | (position >> 4));
+        I2C_send_1byte_command(SSD1306_PAGE_START_ADDRESS | down_page);
+
+        //I2C_send_1byte_data(0xff);
+        
+        for (uint8_t i = 0; i < 4; i++)
+        {
+            I2C_send_1byte_data(num_tab[0][num_offset - i]);
+        }
+
+        
+        I2C_send_1byte_command(SSD1306_LOWER_COLUMN_START_ADRESS | (position & 0xf));
+        I2C_send_1byte_command(SSD1306_HIGER_COLUMN_START_ADRESS | (position >> 4));
+        I2C_send_1byte_command(SSD1306_PAGE_START_ADDRESS | (down_page + 1));
+        
+        for (uint8_t i = 0; i < 4; i++)
+        {
+            I2C_send_1byte_data(num_tab[1][num_offset - i]);
+        }
+    }
+
+}
+
 void OLED_print_integer_number(uint8_t down_page,uint8_t starrt_position,uint32_t number_input)
 {
     uint8_t num_1000 = number_input / 1000;
@@ -222,4 +267,12 @@ void OLED_print_integer_number(uint8_t down_page,uint8_t starrt_position,uint32_
     OLED_print_num(down_page,starrt_position + 1,num_100);
     OLED_print_num(down_page,starrt_position + 2,num_10);
     OLED_print_num(down_page,starrt_position + 3,num_1);
+}
+
+void OLED_print_from_string_num(uint8_t down_page, uint8_t starrt_position, uint8_t str[4])
+{
+    OLED_print_num(down_page,starrt_position,str[0]);
+    OLED_print_num(down_page,starrt_position + 1,str[1]);
+    OLED_print_num(down_page,starrt_position + 2,str[2]);
+    OLED_print_num(down_page,starrt_position + 3,str[3]);
 }

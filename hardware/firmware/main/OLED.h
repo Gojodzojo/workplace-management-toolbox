@@ -21,6 +21,9 @@
 #define SSD1306_DISPLAY_ON 0xAF
 #define SSD1306_DISPLAY_OFF 0xAE
 
+#define SSD1306_DISPLAY_RAM 0xA4
+#define SSD1306_DISPLAY_FLOAT 0xA5
+
 #define SSD1306_LOWER_COLUMN_START_ADRESS 0x00
 #define SSD1306_HIGER_COLUMN_START_ADRESS 0x10
 
@@ -51,4 +54,7 @@ void OLED_clear(void);
 void OLED_structure_builder(void);
 void OLED_print_char(uint8_t down_page,uint8_t position,uint8_t character);
 void OLED_print_num(uint8_t down_page,uint8_t position,uint8_t num);
+void OLED_print_num_ascii(uint8_t down_page,uint8_t position,uint8_t num);
 void OLED_print_integer_number(uint8_t down_page,uint8_t starrt_position,uint32_t number_input);
+void I2C_send_1byte_command(uint8_t command);
+
