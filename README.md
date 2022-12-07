@@ -19,4 +19,4 @@ First, you must create a new account in the web app. After logging in, you can p
 
 When the day of your reservation comes, you will notice that the screen on the device next to the door displays your id. To enter the office you can use a fingerprint reader on the device (on the hackathon we did not have a fingerpint reader, but we used a button to imitate it). As soon as you authorize your entry, a computer in the office will automatically launch applications specified in a predefined list, so you can get to work right away.
 
-If you want to know more about this project, you can [check this presentation](https://github.com/Gojodzojo/bit-festival-2022/blob/main/presentation.pdf)
+If you want to know more about this project, you can [check this presentation](https://github.com/Gojodzojo/workplace-management-toolbox/blob/main/presentatioin.pdf)
